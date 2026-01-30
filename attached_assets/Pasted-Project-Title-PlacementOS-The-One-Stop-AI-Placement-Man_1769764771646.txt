@@ -1,0 +1,85 @@
+Project Title: PlacementOS - The One-Stop AI Placement Manager
+Role: Act as a Senior Product Architect.
+
+Context:
+I am building a high-end, feature-rich web application for student placement preparation. This app must be distinct, efficient, and "bug-free" (handling real-world scenarios). It must feel like a "Super App" with deep functionality.
+
+Tech Stack:
+- Framework: React (Vite) + Tailwind CSS + Shadcn UI.
+- Architecture: Modular, Multi-page Application (MPA) behavior.
+- AI Integration: Custom Hugging Face Space (via API).
+
+---
+PART 1: STRICT DEVELOPMENT INSTRUCTIONS (Do Not Ignore)
+Based on my specific requirements, you must follow these rules:
+
+1. "Real-World" Bug Proofing:
+   - Do not build "happy path" only code.
+   - Example: If you create an "Add Button," you MUST also include "Edit" and "Delete" buttons for that item.
+   - Prevent common glitches: Ensure inputs are validated (no empty submissions) and UI doesn't break if a long text is entered.
+
+2. Code Segmentation (Folder Structure):
+   - The code must be highly structured. Do not dump everything in App.jsx.
+   - Create separate folders/files for:
+     - /components (Buttons, Cards)
+     - /pages (Dashboard, Resume, Chat)
+     - /services (API calls, Auth logic)
+     - /hooks (Custom logic)
+
+3. Distinctive & "Out of the Box":
+   - The app should not look generic. Use unique layouts (e.g., Glassmorphism, Neon accents).
+   - Features must be distinct (e.g., instead of just "Chat," offer "Interviewer Personas").
+
+4. Multi-Page Architecture (YouTube Style):
+   - The app must handle navigation smoothly (like youtube.com/shorts).
+   - CRITICAL: App logic must not break on page refresh. Use local storage or state persistence so user data (chats/resumes) isn't lost on reload.
+
+5. AI Engine (Hugging Face Integration):
+   - Create a dedicated `aiService.js` file.
+   - This file will eventually connect to my custom Hugging Face Space.
+   - For now, structure it to accept an API Key and return mock responses, but the "plumbing" for the real integration must be ready.
+
+6. Real-World UI Elements:
+   - Include a proper Sidebar/Navbar with: User Profile, Settings, and a functioning "Logout" button.
+   - Implement a robust Dark Mode/Light Mode toggle.
+
+7. Visual Richness (Media):
+   - Use placeholders for Logos and GIFs.
+   - Use Lottie Animations (via react-lottie) for loading states (e.g., a scanning animation when analyzing a resume) to make it feel premium.
+
+8. Premium UX (Smoothness):
+   - UI must be clean, not "sharpy." Use rounded corners (border-radius-xl).
+   - Add smooth transition effects (0.3s ease-in-out) when hovering over buttons or switching tabs. No jerky movements.
+
+---
+PART 2: REQUIRED FEATURES (The "Overwhelming" List)
+Build the Sidebar with these 6 Hubs to make the app feel massive:
+
+HUB 1: 🏠 DASHBOARD
+- "Placement Probability Meter" (Gauge chart).
+- "Daily Streak" & "Upcoming Deadlines".
+
+HUB 2: 📝 DOCUMENT FORGE
+- "ATS Resume Scanner" (Visual heatmap of missing skills).
+- "Cover Letter Generator" (Input Job + Resume -> Output Text).
+- *Remember Instruction #1:* Allow users to Delete or Rename saved documents.
+
+HUB 3: 🧠 KNOWLEDGE CORE
+- "Roadmap Generator" (Step-by-step study plan).
+- "Flashcard Deck" (Flip animation).
+
+HUB 4: 🎤 INTERVIEW SIMULATOR
+- "Mock-Mate AI Chat": A chat interface specifically for interviews.
+- "Voice Mode Toggle": UI for speech-to-text.
+
+HUB 5: 💻 CODE LAB
+- "Code Reviewer": Area to paste code and get "Big O" analysis.
+- "Snippet Saver": Save useful code blocks (with Edit/Delete).
+
+HUB 6: 📊 UTILITIES
+- "Application Kanban Board" (Drag & Drop: Applied -> Interview -> Offer).
+- "Expense Tracker" (For travel costs). *Must have Add/Edit/Delete rows.*
+
+---
+Output Requirement:
+Start by scaffolding the strict Folder Structure (Instruction #2). Then, build the Sidebar navigation and the Dashboard. Ensure the UI is smooth (Instruction #8) and the "Edit/Delete" logic is present in the mocked data tables.
