@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Sidebar } from "@/components/Sidebar";
+import { MobileNav } from "@/components/MobileNav";
 import { useInterviews, useCreateInterview, useUpdateInterview } from "@/hooks/use-resources";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
