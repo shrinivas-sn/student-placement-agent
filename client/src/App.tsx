@@ -14,6 +14,8 @@ import KnowledgeCore from "@/pages/KnowledgeCore";
 import InterviewSimulator from "@/pages/InterviewSimulator";
 import CodeLab from "@/pages/CodeLab";
 import Utilities from "@/pages/Utilities";
+import Settings from "@/pages/Settings";
+import UserGuide from "@/pages/UserGuide";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { user, isLoading } = useAuth();
@@ -66,6 +68,12 @@ function Router() {
       </Route>
       <Route path="/utilities">
         <ProtectedRoute component={Utilities} />
+      </Route>
+      <Route path="/guide">
+        <ProtectedRoute component={UserGuide} />
+      </Route>
+      <Route path="/settings">
+        <ProtectedRoute component={Settings} />
       </Route>
 
       {/* Fallback to 404 */}

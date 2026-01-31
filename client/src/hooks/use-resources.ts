@@ -1,356 +1,405 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api, buildUrl } from "@shared/routes";
-import { 
-  type InsertStats, type InsertDocument, type InsertRoadmap, 
-  type InsertFlashcardDeck, type InsertFlashcard, type InsertInterview, 
-  type InsertCodeSnippet, type InsertApplication, type InsertExpense,
-  type Stats
-} from "@shared/schema";
+import { useAuth } from "./use-auth";
+import * as firestore from "@/services/firestore";
 
-// --- STATS ---
+// ============= STATS =============
+
 export function useStats() {
+  const { userId } = useAuth();
+
   return useQuery({
-    queryKey: [api.stats.get.path],
-    queryFn: async () => {
-      const res = await fetch(api.stats.get.path, { credentials: "include" });
-      if (res.status === 404) return null;
-      if (!res.ok) throw new Error("Failed to fetch stats");
-      return api.stats.get.responses[200].parse(await res.json());
-    },
+    queryKey: ["stats", userId],
+    queryFn: () => firestore.getStats(userId!),
+    enabled: !!userId,
   });
 }
 
 export function useUpdateStats() {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
   return useMutation({
-    mutationFn: async (data: InsertStats) => {
-      const res = await fetch(api.stats.update.path, {
-        method: api.stats.update.method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed to update stats");
-      return api.stats.update.responses[200].parse(await res.json());
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.stats.get.path] }),
+    mutationFn: (data: Partial<firestore.Stats>) => firestore.updateStats(userId!, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["stats", userId] }),
   });
 }
 
-// --- DOCUMENTS ---
+// ============= DOCUMENTS =============
+
 export function useDocuments() {
+  const { userId } = useAuth();
+
   return useQuery({
-    queryKey: [api.documents.list.path],
-    queryFn: async () => {
-      const res = await fetch(api.documents.list.path, { credentials: "include" });
-      if (!res.ok) throw new Error("Failed to fetch documents");
-      return api.documents.list.responses[200].parse(await res.json());
-    },
+    queryKey: ["documents", userId],
+    queryFn: () => firestore.getDocuments(userId!),
+    enabled: !!userId,
   });
 }
 
 export function useCreateDocument() {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
   return useMutation({
-    mutationFn: async (data: InsertDocument) => {
-      const res = await fetch(api.documents.create.path, {
-        method: api.documents.create.method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed to create document");
-      return api.documents.create.responses[201].parse(await res.json());
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.documents.list.path] }),
+    mutationFn: (data: Omit<firestore.Document, 'id' | 'createdAt' | 'updatedAt'>) =>
+      firestore.createDocument(userId!, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["documents", userId] }),
   });
 }
 
 export function useDeleteDocument() {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
   return useMutation({
-    mutationFn: async (id: number) => {
-      const url = buildUrl(api.documents.delete.path, { id });
-      const res = await fetch(url, { method: api.documents.delete.method, credentials: "include" });
-      if (!res.ok) throw new Error("Failed to delete document");
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.documents.list.path] }),
+    mutationFn: (docId: string) => firestore.deleteDocument(userId!, docId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["documents", userId] }),
   });
 }
 
-// --- ROADMAPS ---
+// ============= ROADMAPS =============
+
 export function useRoadmaps() {
+  const { userId } = useAuth();
+
   return useQuery({
-    queryKey: [api.roadmaps.list.path],
-    queryFn: async () => {
-      const res = await fetch(api.roadmaps.list.path, { credentials: "include" });
-      if (!res.ok) throw new Error("Failed to fetch roadmaps");
-      return api.roadmaps.list.responses[200].parse(await res.json());
-    },
+    queryKey: ["roadmaps", userId],
+    queryFn: () => firestore.getRoadmaps(userId!),
+    enabled: !!userId,
   });
 }
 
 export function useCreateRoadmap() {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
   return useMutation({
-    mutationFn: async (data: InsertRoadmap) => {
-      const res = await fetch(api.roadmaps.create.path, {
-        method: api.roadmaps.create.method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed to create roadmap");
-      return api.roadmaps.create.responses[201].parse(await res.json());
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.roadmaps.list.path] }),
+    mutationFn: (data: Omit<firestore.Roadmap, 'id'>) => firestore.createRoadmap(userId!, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["roadmaps", userId] }),
   });
 }
 
-// --- FLASHCARDS ---
+// ============= FLASHCARDS =============
+
 export function useFlashcardDecks() {
+  const { userId } = useAuth();
+
   return useQuery({
-    queryKey: [api.flashcards.listDecks.path],
-    queryFn: async () => {
-      const res = await fetch(api.flashcards.listDecks.path, { credentials: "include" });
-      if (!res.ok) throw new Error("Failed to fetch decks");
-      return api.flashcards.listDecks.responses[200].parse(await res.json());
-    },
+    queryKey: ["flashcardDecks", userId],
+    queryFn: () => firestore.getFlashcardDecks(userId!),
+    enabled: !!userId,
   });
 }
 
 export function useCreateFlashcardDeck() {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
   return useMutation({
-    mutationFn: async (data: InsertFlashcardDeck) => {
-      const res = await fetch(api.flashcards.createDeck.path, {
-        method: api.flashcards.createDeck.method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed to create deck");
-      return api.flashcards.createDeck.responses[201].parse(await res.json());
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.flashcards.listDecks.path] }),
+    mutationFn: (data: Omit<firestore.FlashcardDeck, 'id'>) =>
+      firestore.createFlashcardDeck(userId!, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["flashcardDecks", userId] }),
   });
 }
 
-export function useFlashcards(deckId: number) {
+export function useFlashcards(deckId: string) {
+  const { userId } = useAuth();
+
   return useQuery({
-    queryKey: [api.flashcards.listCards.path, deckId],
-    queryFn: async () => {
-      const url = buildUrl(api.flashcards.listCards.path, { deckId });
-      const res = await fetch(url, { credentials: "include" });
-      if (!res.ok) throw new Error("Failed to fetch cards");
-      return api.flashcards.listCards.responses[200].parse(await res.json());
-    },
-    enabled: !!deckId,
+    queryKey: ["flashcards", userId, deckId],
+    queryFn: () => firestore.getFlashcards(userId!, deckId),
+    enabled: !!userId && !!deckId,
   });
 }
 
 export function useCreateFlashcard() {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
   return useMutation({
-    mutationFn: async ({ deckId, ...data }: InsertFlashcard) => {
-      const url = buildUrl(api.flashcards.createCard.path, { deckId });
-      const res = await fetch(url, {
-        method: api.flashcards.createCard.method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed to create card");
-      return api.flashcards.createCard.responses[201].parse(await res.json());
-    },
-    onSuccess: (_, variables) => queryClient.invalidateQueries({ queryKey: [api.flashcards.listCards.path, variables.deckId] }),
+    mutationFn: ({ deckId, ...data }: { deckId: string } & Omit<firestore.Flashcard, 'id'>) =>
+      firestore.createFlashcard(userId!, deckId, data),
+    onSuccess: (_, variables) =>
+      queryClient.invalidateQueries({ queryKey: ["flashcards", userId, variables.deckId] }),
   });
 }
 
-// --- INTERVIEWS ---
+// ============= INTERVIEWS =============
+
 export function useInterviews() {
+  const { userId } = useAuth();
+
   return useQuery({
-    queryKey: [api.interviews.list.path],
-    queryFn: async () => {
-      const res = await fetch(api.interviews.list.path, { credentials: "include" });
-      if (!res.ok) throw new Error("Failed to fetch interviews");
-      return api.interviews.list.responses[200].parse(await res.json());
-    },
+    queryKey: ["interviews", userId],
+    queryFn: () => firestore.getInterviews(userId!),
+    enabled: !!userId,
   });
 }
 
 export function useCreateInterview() {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
   return useMutation({
-    mutationFn: async (data: InsertInterview) => {
-      const res = await fetch(api.interviews.create.path, {
-        method: api.interviews.create.method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed to create interview");
-      return api.interviews.create.responses[201].parse(await res.json());
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.interviews.list.path] }),
+    mutationFn: (data: Omit<firestore.Interview, 'id' | 'createdAt'>) =>
+      firestore.createInterview(userId!, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["interviews", userId] }),
   });
 }
 
 export function useUpdateInterview() {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
   return useMutation({
-    mutationFn: async ({ id, messages }: { id: number, messages: any[] }) => {
-      const url = buildUrl(api.interviews.update.path, { id });
-      const res = await fetch(url, {
-        method: api.interviews.update.method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages }),
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed to update interview");
-      return api.interviews.update.responses[200].parse(await res.json());
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.interviews.list.path] }),
+    mutationFn: ({ id, messages }: { id: string; messages: any[] }) =>
+      firestore.updateInterview(userId!, id, messages),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["interviews", userId] }),
   });
 }
 
-// --- CODE SNIPPETS ---
+// ============= CODE SNIPPETS =============
+
 export function useCodeSnippets() {
+  const { userId } = useAuth();
+
   return useQuery({
-    queryKey: [api.codeSnippets.list.path],
-    queryFn: async () => {
-      const res = await fetch(api.codeSnippets.list.path, { credentials: "include" });
-      if (!res.ok) throw new Error("Failed to fetch snippets");
-      return api.codeSnippets.list.responses[200].parse(await res.json());
-    },
+    queryKey: ["codeSnippets", userId],
+    queryFn: () => firestore.getCodeSnippets(userId!),
+    enabled: !!userId,
   });
 }
 
 export function useCreateCodeSnippet() {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
   return useMutation({
-    mutationFn: async (data: InsertCodeSnippet) => {
-      const res = await fetch(api.codeSnippets.create.path, {
-        method: api.codeSnippets.create.method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed to create snippet");
-      return api.codeSnippets.create.responses[201].parse(await res.json());
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.codeSnippets.list.path] }),
+    mutationFn: (data: Omit<firestore.CodeSnippet, 'id'>) =>
+      firestore.createCodeSnippet(userId!, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["codeSnippets", userId] }),
   });
 }
 
 export function useDeleteCodeSnippet() {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
   return useMutation({
-    mutationFn: async (id: number) => {
-      const url = buildUrl(api.codeSnippets.delete.path, { id });
-      const res = await fetch(url, { method: api.codeSnippets.delete.method, credentials: "include" });
-      if (!res.ok) throw new Error("Failed to delete snippet");
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.codeSnippets.list.path] }),
+    mutationFn: (snippetId: string) => firestore.deleteCodeSnippet(userId!, snippetId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["codeSnippets", userId] }),
   });
 }
 
-// --- APPLICATIONS ---
+// ============= APPLICATIONS =============
+
 export function useApplications() {
+  const { userId } = useAuth();
+
   return useQuery({
-    queryKey: [api.applications.list.path],
-    queryFn: async () => {
-      const res = await fetch(api.applications.list.path, { credentials: "include" });
-      if (!res.ok) throw new Error("Failed to fetch applications");
-      return api.applications.list.responses[200].parse(await res.json());
-    },
+    queryKey: ["applications", userId],
+    queryFn: () => firestore.getApplications(userId!),
+    enabled: !!userId,
   });
 }
 
 export function useCreateApplication() {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
   return useMutation({
-    mutationFn: async (data: InsertApplication) => {
-      const res = await fetch(api.applications.create.path, {
-        method: api.applications.create.method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed to create application");
-      return api.applications.create.responses[201].parse(await res.json());
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.applications.list.path] }),
+    mutationFn: (data: Omit<firestore.Application, 'id' | 'dateApplied'>) =>
+      firestore.createApplication(userId!, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["applications", userId] }),
   });
 }
 
 export function useUpdateApplication() {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
   return useMutation({
-    mutationFn: async ({ id, ...data }: { id: number } & Partial<InsertApplication>) => {
-      const url = buildUrl(api.applications.update.path, { id });
-      const res = await fetch(url, {
-        method: api.applications.update.method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed to update application");
-      return api.applications.update.responses[200].parse(await res.json());
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.applications.list.path] }),
+    mutationFn: ({ id, ...data }: { id: string } & Partial<firestore.Application>) =>
+      firestore.updateApplication(userId!, id, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["applications", userId] }),
   });
 }
 
 export function useDeleteApplication() {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
   return useMutation({
-    mutationFn: async (id: number) => {
-      const url = buildUrl(api.applications.delete.path, { id });
-      const res = await fetch(url, { method: api.applications.delete.method, credentials: "include" });
-      if (!res.ok) throw new Error("Failed to delete application");
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.applications.list.path] }),
+    mutationFn: (appId: string) => firestore.deleteApplication(userId!, appId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["applications", userId] }),
   });
 }
 
-// --- EXPENSES ---
+// ============= EXPENSES =============
+
 export function useExpenses() {
+  const { userId } = useAuth();
+
   return useQuery({
-    queryKey: [api.expenses.list.path],
-    queryFn: async () => {
-      const res = await fetch(api.expenses.list.path, { credentials: "include" });
-      if (!res.ok) throw new Error("Failed to fetch expenses");
-      return api.expenses.list.responses[200].parse(await res.json());
-    },
+    queryKey: ["expenses", userId],
+    queryFn: () => firestore.getExpenses(userId!),
+    enabled: !!userId,
   });
 }
 
 export function useCreateExpense() {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
   return useMutation({
-    mutationFn: async (data: InsertExpense) => {
-      const res = await fetch(api.expenses.create.path, {
-        method: api.expenses.create.method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed to create expense");
-      return api.expenses.create.responses[201].parse(await res.json());
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.expenses.list.path] }),
+    mutationFn: (data: Omit<firestore.Expense, 'id' | 'date'>) =>
+      firestore.createExpense(userId!, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["expenses", userId] }),
   });
 }
 
 export function useDeleteExpense() {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
   return useMutation({
-    mutationFn: async (id: number) => {
-      const url = buildUrl(api.expenses.delete.path, { id });
-      const res = await fetch(url, { method: api.expenses.delete.method, credentials: "include" });
-      if (!res.ok) throw new Error("Failed to delete expense");
+    mutationFn: (expenseId: string) => firestore.deleteExpense(userId!, expenseId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["expenses", userId] }),
+  });
+}
+
+// ============= EVENTS =============
+
+export function useEvents() {
+  const { userId } = useAuth();
+
+  return useQuery({
+    queryKey: ["events", userId],
+    queryFn: () => firestore.getEvents(userId!),
+    enabled: !!userId,
+  });
+}
+
+export function useCreateEvent() {
+  const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
+  return useMutation({
+    mutationFn: (data: Omit<firestore.Event, 'id' | 'createdAt'>) =>
+      firestore.createEvent(userId!, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["events", userId] }),
+  });
+}
+
+export function useDeleteEvent() {
+  const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
+  return useMutation({
+    mutationFn: (eventId: string) => firestore.deleteEvent(userId!, eventId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["events", userId] }),
+  });
+}
+
+// ============= USER RESUME =============
+
+export function useUserResume() {
+  const { userId } = useAuth();
+
+  return useQuery({
+    queryKey: ["resume", userId],
+    queryFn: () => firestore.getUserResume(userId!),
+    enabled: !!userId,
+  });
+}
+
+export function useSaveResume() {
+  const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
+  return useMutation({
+    mutationFn: (resumeContent: string) => firestore.saveUserResume(userId!, resumeContent),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["resume", userId] }),
+  });
+}
+
+// ============= FLASHCARD DELETE HOOKS =============
+
+export function useDeleteFlashcardDeck() {
+  const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
+  return useMutation({
+    mutationFn: (deckId: string) => firestore.deleteFlashcardDeck(userId!, deckId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["flashcardDecks", userId] }),
+  });
+}
+
+export function useDeleteFlashcard() {
+  const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
+  return useMutation({
+    mutationFn: ({ deckId, cardId }: { deckId: string; cardId: string }) =>
+      firestore.deleteFlashcard(userId!, deckId, cardId),
+    onSuccess: (_, variables) =>
+      queryClient.invalidateQueries({ queryKey: ["flashcards", userId, variables.deckId] }),
+  });
+}
+
+// ============= ACTIVITIES =============
+
+export function useRecentActivities(limit: number = 5) {
+  const { userId } = useAuth();
+
+  return useQuery({
+    queryKey: ["activities", userId, limit],
+    queryFn: () => firestore.getRecentActivities(userId!, limit),
+    enabled: !!userId,
+  });
+}
+
+// ============= USER PROFILE =============
+
+export function useUserProfile() {
+  const { userId } = useAuth();
+
+  return useQuery({
+    queryKey: ["profile", userId],
+    queryFn: () => firestore.getUserProfile(userId!),
+    enabled: !!userId,
+  });
+}
+
+export function useSaveUserProfile() {
+  const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
+  return useMutation({
+    mutationFn: (profile: firestore.UserProfile) => firestore.saveUserProfile(userId!, profile),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["profile", userId] }),
+  });
+}
+
+// ============= DATA EXPORT/IMPORT =============
+
+export function useExportData() {
+  const { userId } = useAuth();
+
+  return useMutation({
+    mutationFn: () => firestore.exportAllUserData(userId!),
+  });
+}
+
+export function useImportData() {
+  const queryClient = useQueryClient();
+  const { userId } = useAuth();
+
+  return useMutation({
+    mutationFn: (data: any) => firestore.importUserData(userId!, data),
+    onSuccess: () => {
+      // Invalidate all queries to refresh data
+      queryClient.invalidateQueries();
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.expenses.list.path] }),
   });
 }

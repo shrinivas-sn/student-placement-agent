@@ -17,6 +17,8 @@ export default function InterviewSimulator() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [aiStatus, setAiStatus] = useState("");
+  const [selectedPersona, setSelectedPersona] = useState("Strict HR");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,15 +36,25 @@ export default function InterviewSimulator() {
 
   const handleSend = async () => {
     if (!input.trim()) return;
-    
+
     const userMsg = { role: "user", content: input };
     setMessages(prev => [...prev, userMsg]);
     setInput("");
     setIsTyping(true);
+    setAiStatus("");
 
     try {
-      const response = await aiService.chatWithInterviewer(input, "Strict HR");
+      const response = await aiService.chatWithInterviewer(
+        input,
+        selectedPersona,
+        messages,
+        (status) => setAiStatus(status)
+      );
       setMessages(prev => [...prev, { role: "assistant", content: response }]);
+      setAiStatus("");
+    } catch (error: any) {
+      setMessages(prev => [...prev, { role: "assistant", content: `Error: ${error.message}` }]);
+      setAiStatus("");
     } finally {
       setIsTyping(false);
     }
@@ -63,7 +75,7 @@ export default function InterviewSimulator() {
             <div className="flex-1 overflow-y-auto p-6 space-y-6" ref={scrollRef}>
               <AnimatePresence>
                 {messages.map((msg, idx) => (
-                  <motion.div 
+                  <motion.div
                     key={idx}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -72,11 +84,10 @@ export default function InterviewSimulator() {
                     <Avatar className={msg.role === 'assistant' ? "bg-purple-600" : "bg-cyan-600"}>
                       <AvatarFallback>{msg.role === 'assistant' ? <Bot className="w-5 h-5" /> : <User className="w-5 h-5" />}</AvatarFallback>
                     </Avatar>
-                    <div className={`rounded-2xl p-4 max-w-[80%] ${
-                      msg.role === 'assistant' 
-                        ? 'bg-white/10 rounded-tl-none' 
-                        : 'bg-cyan-600/20 text-cyan-100 rounded-tr-none border border-cyan-500/20'
-                    }`}>
+                    <div className={`rounded-2xl p-4 max-w-[80%] ${msg.role === 'assistant'
+                      ? 'bg-white/10 rounded-tl-none'
+                      : 'bg-cyan-600/20 text-cyan-100 rounded-tr-none border border-cyan-500/20'
+                      }`}>
                       {msg.content}
                     </div>
                   </motion.div>
@@ -89,16 +100,16 @@ export default function InterviewSimulator() {
                 )}
               </AnimatePresence>
             </div>
-            
+
             <div className="p-4 border-t border-white/5 bg-black/20 flex gap-4">
               <Button size="icon" variant="ghost" className="rounded-full h-10 w-10 border border-white/10 hover:bg-white/10">
                 <Mic className="w-4 h-4" />
               </Button>
-              <Input 
+              <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="Type your answer..." 
+                placeholder="Type your answer..."
                 className="flex-1 bg-white/5 border-white/10 rounded-full px-6 focus-visible:ring-purple-500"
               />
               <Button size="icon" onClick={handleSend} className="rounded-full h-10 w-10 bg-purple-600 hover:bg-purple-700">
@@ -113,16 +124,26 @@ export default function InterviewSimulator() {
               <h3 className="font-bold mb-4 text-purple-400">Interviewer Persona</h3>
               <div className="space-y-2">
                 {['Strict HR', 'Chill Tech Lead', 'System Design Expert'].map(persona => (
-                  <div key={persona} className="p-3 rounded-lg bg-white/5 border border-white/5 hover:border-purple-500/50 cursor-pointer transition-all">
+                  <div
+                    key={persona}
+                    onClick={() => setSelectedPersona(persona)}
+                    className={`p-3 rounded-lg border cursor-pointer transition-all ${selectedPersona === persona
+                        ? 'bg-purple-500/20 border-purple-500 shadow-lg shadow-purple-500/20'
+                        : 'bg-white/5 border-white/5 hover:border-purple-500/50'
+                      }`}
+                  >
                     <p className="text-sm font-medium">{persona}</p>
+                    {selectedPersona === persona && (
+                      <p className="text-xs text-purple-300 mt-1">✓ Active</p>
+                    )}
                   </div>
                 ))}
               </div>
             </Card>
 
             <Card className="glass-card p-4">
-               <h3 className="font-bold mb-2">History</h3>
-               <p className="text-sm text-muted-foreground">No previous sessions.</p>
+              <h3 className="font-bold mb-2">History</h3>
+              <p className="text-sm text-muted-foreground">No previous sessions.</p>
             </Card>
           </div>
         </div>

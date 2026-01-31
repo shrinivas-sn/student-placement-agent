@@ -12,12 +12,22 @@ export default function CodeLab() {
 }`);
   const [analysis, setAnalysis] = useState<any>(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const [aiStatus, setAiStatus] = useState("");
 
   const handleAnalyze = async () => {
+    if (!code.trim()) return;
     setAnalyzing(true);
-    const result = await aiService.analyzeCode(code);
-    setAnalysis(result);
-    setAnalyzing(false);
+    setAiStatus("");
+    try {
+      const result = await aiService.analyzeCode(code, (status) => setAiStatus(status));
+      setAnalysis(result);
+      setAiStatus("");
+    } catch (error: any) {
+      console.error("Code analysis error:", error);
+      setAiStatus("");
+    } finally {
+      setAnalyzing(false);
+    }
   };
 
   return (
@@ -30,9 +40,9 @@ export default function CodeLab() {
             <p className="text-muted-foreground">Experiment, analyze, and optimize your algorithms.</p>
           </div>
           <div className="flex gap-2">
-             <Button variant="outline" className="border-orange-500/50 text-orange-400 hover:bg-orange-500/10 gap-2">
-                <Save className="w-4 h-4" /> Save Snippet
-             </Button>
+            <Button variant="outline" className="border-orange-500/50 text-orange-400 hover:bg-orange-500/10 gap-2">
+              <Save className="w-4 h-4" /> Save Snippet
+            </Button>
           </div>
         </header>
 
@@ -47,10 +57,15 @@ export default function CodeLab() {
               </Button>
             </CardHeader>
             <CardContent>
-              <Textarea 
+              {aiStatus && (
+                <div className="mb-3 p-2 rounded-lg bg-orange-500/10 border border-orange-500/30 text-xs text-orange-300 animate-pulse">
+                  {aiStatus}
+                </div>
+              )}
+              <Textarea
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                className="font-mono bg-black/40 border-white/10 min-h-[500px] text-sm" 
+                className="font-mono bg-black/40 border-white/10 min-h-[500px] text-sm"
                 spellCheck={false}
               />
             </CardContent>
@@ -63,34 +78,34 @@ export default function CodeLab() {
                   <CardTitle className="text-orange-400">Analysis Results</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                   <div className="p-4 rounded bg-orange-500/10 border border-orange-500/20">
-                      <p className="text-xs text-orange-300 uppercase tracking-widest mb-1">Time Complexity</p>
-                      <p className="text-2xl font-bold font-mono">{analysis.complexity}</p>
-                   </div>
-                   
-                   <div>
-                      <h4 className="font-semibold mb-2">Suggestions</h4>
-                      <ul className="list-disc pl-4 space-y-2 text-sm text-muted-foreground">
-                         {analysis.suggestions.map((s: string, i: number) => (
-                            <li key={i}>{s}</li>
-                         ))}
-                      </ul>
-                   </div>
+                  <div className="p-4 rounded bg-orange-500/10 border border-orange-500/20">
+                    <p className="text-xs text-orange-300 uppercase tracking-widest mb-1">Time Complexity</p>
+                    <p className="text-2xl font-bold font-mono">{analysis.complexity}</p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-2">Suggestions</h4>
+                    <ul className="list-disc pl-4 space-y-2 text-sm text-muted-foreground">
+                      {analysis.suggestions.map((s: string, i: number) => (
+                        <li key={i}>{s}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </CardContent>
               </Card>
             ) : (
               <Card className="glass-card border-dashed border-white/20">
                 <CardContent className="flex items-center justify-center h-48 text-muted-foreground text-center p-6">
-                   Run analysis to see Big O complexity and code quality suggestions.
+                  Run analysis to see Big O complexity and code quality suggestions.
                 </CardContent>
               </Card>
             )}
-            
+
             <Card className="glass-card">
-               <CardHeader><CardTitle>Saved Snippets</CardTitle></CardHeader>
-               <CardContent>
-                  <div className="text-sm text-muted-foreground text-center py-4">No saved snippets yet.</div>
-               </CardContent>
+              <CardHeader><CardTitle>Saved Snippets</CardTitle></CardHeader>
+              <CardContent>
+                <div className="text-sm text-muted-foreground text-center py-4">No saved snippets yet.</div>
+              </CardContent>
             </Card>
           </div>
         </div>

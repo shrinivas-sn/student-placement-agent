@@ -1,25 +1,24 @@
 import { Sidebar } from "@/components/Sidebar";
-import { useRoadmaps, useFlashcardDecks } from "@/hooks/use-resources";
+import { FlashcardManager } from "@/components/FlashcardManager";
+import { useRoadmaps } from "@/hooks/use-resources";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle, Circle, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { CheckCircle, Circle } from "lucide-react";
 
 export default function KnowledgeCore() {
   const { data: roadmaps } = useRoadmaps();
-  const { data: decks } = useFlashcardDecks();
 
   // Mock data for display if empty
   const displayRoadmaps = roadmaps?.length ? roadmaps : [
-    { 
-      id: 1, 
-      title: "Frontend Mastery", 
+    {
+      id: 1,
+      title: "Frontend Mastery",
       steps: [
-        {title: "HTML/CSS Basics", status: "completed"},
-        {title: "JavaScript ES6+", status: "completed"},
-        {title: "React Hooks", status: "pending"},
-        {title: "State Management", status: "pending"}
-      ] 
+        { title: "HTML/CSS Basics", status: "completed" },
+        { title: "JavaScript ES6+", status: "completed" },
+        { title: "React Hooks", status: "pending" },
+        { title: "State Management", status: "pending" }
+      ]
     }
   ];
 
@@ -32,11 +31,15 @@ export default function KnowledgeCore() {
           <p className="text-muted-foreground">Map your journey and reinforce your memory.</p>
         </header>
 
-        <Tabs defaultValue="roadmaps" className="space-y-6">
+        <Tabs defaultValue="flashcards" className="space-y-6">
           <TabsList className="bg-white/5 border border-white/10">
+            <TabsTrigger value="flashcards" className="data-[state=active]:bg-green-500 data-[state=active]:text-black">Flashcards</TabsTrigger>
             <TabsTrigger value="roadmaps" className="data-[state=active]:bg-lime-500 data-[state=active]:text-black">Roadmaps</TabsTrigger>
-            <TabsTrigger value="flashcards" className="data-[state=active]:bg-yellow-500 data-[state=active]:text-black">Flashcards</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="flashcards">
+            <FlashcardManager />
+          </TabsContent>
 
           <TabsContent value="roadmaps">
             <div className="grid grid-cols-1 gap-6">
@@ -61,40 +64,6 @@ export default function KnowledgeCore() {
                 </Card>
               ))}
             </div>
-          </TabsContent>
-
-          <TabsContent value="flashcards">
-             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="glass-card border-yellow-500/20 hover:border-yellow-500/50 cursor-pointer group">
-                   <CardContent className="flex flex-col items-center justify-center h-48 text-center p-6">
-                      <div className="w-16 h-16 rounded-full bg-yellow-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                         <div className="text-3xl">⚛️</div>
-                      </div>
-                      <h3 className="font-bold text-lg">React Interview</h3>
-                      <p className="text-sm text-muted-foreground">24 Cards</p>
-                   </CardContent>
-                </Card>
-                
-                <Card className="glass-card border-blue-500/20 hover:border-blue-500/50 cursor-pointer group">
-                   <CardContent className="flex flex-col items-center justify-center h-48 text-center p-6">
-                      <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                         <div className="text-3xl">💾</div>
-                      </div>
-                      <h3 className="font-bold text-lg">System Design</h3>
-                      <p className="text-sm text-muted-foreground">15 Cards</p>
-                   </CardContent>
-                </Card>
-
-                {/* Add New Deck Placeholder */}
-                <Card className="glass-card border-dashed border-white/20 hover:border-white/40 cursor-pointer">
-                   <CardContent className="flex flex-col items-center justify-center h-48 text-center">
-                      <div className="w-12 h-12 rounded-full border-2 border-white/20 flex items-center justify-center mb-2">
-                         <span className="text-2xl">+</span>
-                      </div>
-                      <h3 className="font-medium">Create New Deck</h3>
-                   </CardContent>
-                </Card>
-             </div>
           </TabsContent>
         </Tabs>
       </main>

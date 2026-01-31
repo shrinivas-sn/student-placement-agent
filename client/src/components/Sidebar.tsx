@@ -1,10 +1,10 @@
 import { Link, useLocation } from "wouter";
-import { 
-  LayoutDashboard, 
-  FileText, 
-  BookOpen, 
-  MessageSquare, 
-  Code, 
+import {
+  LayoutDashboard,
+  FileText,
+  BookOpen,
+  MessageSquare,
+  Code,
   Briefcase,
   LogOut,
   User,
@@ -25,6 +25,7 @@ export function Sidebar() {
     { label: "Interview Sim", href: "/interview", icon: MessageSquare, color: "text-purple-400" },
     { label: "Code Lab", href: "/code", icon: Code, color: "text-orange-400" },
     { label: "Utilities", href: "/utilities", icon: Briefcase, color: "text-blue-400" },
+    { label: "User Guide", href: "/guide", icon: User, color: "text-green-400" },
   ];
 
   return (
@@ -40,11 +41,11 @@ export function Sidebar() {
           const isActive = location === item.href;
           return (
             <Link key={item.href} href={item.href}>
-              <div 
+              <div
                 className={cn(
                   "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer group",
-                  isActive 
-                    ? "bg-white/10 text-white shadow-lg shadow-black/10 border border-white/10" 
+                  isActive
+                    ? "bg-white/10 text-white shadow-lg shadow-black/10 border border-white/10"
                     : "text-muted-foreground hover:text-white hover:bg-white/5"
                 )}
               >
@@ -76,13 +77,15 @@ export function Sidebar() {
             </p>
           </div>
         </div>
-        
+
         <div className="flex gap-2">
-          <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-xs font-medium text-muted-foreground hover:text-white">
-            <Settings className="w-4 h-4" />
-            Settings
-          </button>
-          <button 
+          <Link href="/settings" className="flex-1">
+            <button className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-xs font-medium text-muted-foreground hover:text-white">
+              <Settings className="w-4 h-4" />
+              Settings
+            </button>
+          </Link>
+          <button
             onClick={() => logout()}
             className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-colors text-xs font-medium text-red-400 hover:text-red-300"
           >

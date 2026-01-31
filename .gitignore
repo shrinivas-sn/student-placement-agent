@@ -4,3 +4,20 @@ dist
 server/public
 vite.config.ts.*
 *.tar.gz
+
+# Environment variables - NEVER COMMIT!
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Build outputs
+.vercel/
+build/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
