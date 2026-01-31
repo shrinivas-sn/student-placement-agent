@@ -1,4 +1,5 @@
 import { Sidebar } from "@/components/Sidebar";
+import { MobileNav } from "@/components/MobileNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpen, Target, FileText, MessageSquare, Code, Briefcase, Settings } from "lucide-react";
@@ -7,7 +8,8 @@ export default function UserGuide() {
     return (
         <div className="flex min-h-screen bg-background text-foreground">
             <Sidebar />
-            <main className="flex-1 ml-64 p-8 overflow-y-auto">
+            <MobileNav />
+            <main className="flex-1 md:ml-64 p-4 md:p-8 overflow-y-auto">
                 <header className="mb-8">
                     <h2 className="text-3xl font-bold font-['Orbitron'] mb-2">User Guide</h2>
                     <p className="text-muted-foreground">Learn how to use PlacementOS effectively</p>

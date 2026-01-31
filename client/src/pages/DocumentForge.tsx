@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
+import { MobileNav } from "@/components/MobileNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -128,7 +129,8 @@ Generate the professional job application email now:`;
   return (
     <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar />
-      <main className="flex-1 ml-64 p-8 overflow-y-auto">
+      <MobileNav />
+      <main className="flex-1 md:ml-64 p-4 md:p-8 overflow-y-auto">
         <header className="mb-8">
           <h2 className="text-3xl font-bold font-['Orbitron'] mb-2 text-cyan-400">Document Forge</h2>
           <p className="text-muted-foreground">Manage your resume and draft professional emails with AI assistance.</p>

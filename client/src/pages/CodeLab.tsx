@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
+import { MobileNav } from "@/components/MobileNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -33,7 +34,8 @@ export default function CodeLab() {
   return (
     <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar />
-      <main className="flex-1 ml-64 p-8 overflow-y-auto">
+      <MobileNav />
+      <main className="flex-1 md:ml-64 p-4 md:p-8 overflow-y-auto">
         <header className="mb-8 flex justify-between items-center">
           <div>
             <h2 className="text-3xl font-bold font-['Orbitron'] mb-2 text-orange-400">Code Lab</h2>

@@ -63,7 +63,8 @@ export default function InterviewSimulator() {
   return (
     <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar />
-      <main className="flex-1 ml-64 p-8 flex flex-col h-screen overflow-hidden">
+      <MobileNav />
+      <main className="flex-1 md:ml-64 p-4 md:p-8 flex flex-col h-screen overflow-hidden">
         <header className="mb-6 flex-shrink-0">
           <h2 className="text-3xl font-bold font-['Orbitron'] mb-2 text-purple-400">Interview Simulator</h2>
           <p className="text-muted-foreground">Practice makes perfect. AI-powered mock interviews.</p>
@@ -128,8 +129,8 @@ export default function InterviewSimulator() {
                     key={persona}
                     onClick={() => setSelectedPersona(persona)}
                     className={`p-3 rounded-lg border cursor-pointer transition-all ${selectedPersona === persona
-                        ? 'bg-purple-500/20 border-purple-500 shadow-lg shadow-purple-500/20'
-                        : 'bg-white/5 border-white/5 hover:border-purple-500/50'
+                      ? 'bg-purple-500/20 border-purple-500 shadow-lg shadow-purple-500/20'
+                      : 'bg-white/5 border-white/5 hover:border-purple-500/50'
                       }`}
                   >
                     <p className="text-sm font-medium">{persona}</p>
