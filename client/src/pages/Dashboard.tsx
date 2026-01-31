@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
+import { MobileNav } from "@/components/MobileNav";
 import { useStats, useEvents } from "@/hooks/use-resources";
 import { useRecentActivities } from "@/hooks/use-resources";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,7 +31,8 @@ export default function Dashboard() {
   return (
     <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar />
-      <main className="flex-1 ml-64 p-8 overflow-y-auto">
+      <MobileNav />
+      <main className="flex-1 md:ml-64 p-4 md:p-8 overflow-y-auto">
         <header className="mb-8">
           <h2 className="text-3xl font-bold font-['Orbitron'] mb-2">Command Center</h2>
           <p className="text-muted-foreground">Welcome back, Cadet. Status report loaded.</p>

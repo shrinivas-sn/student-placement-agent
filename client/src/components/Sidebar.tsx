@@ -29,7 +29,7 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-card/50 backdrop-blur-xl border-r border-white/5 flex flex-col z-50">
+    <aside className="hidden md:flex fixed left-0 top-0 h-screen w-64 bg-card/50 backdrop-blur-xl border-r border-white/5 flex-col z-50">
       <div className="p-6">
         <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-magenta-500 font-['Orbitron']">
           PlacementOS

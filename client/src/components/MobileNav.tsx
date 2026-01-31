@@ -1,0 +1,134 @@
+import { useState } from "react";
+import { Link, useLocation } from "wouter";
+import {
+    LayoutDashboard,
+    FileText,
+    BookOpen,
+    MessageSquare,
+    Code,
+    Briefcase,
+    LogOut,
+    User,
+    Settings,
+    Menu,
+    X
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+
+export function MobileNav() {
+    const [open, setOpen] = useState(false);
+    const [location] = useLocation();
+    const { user, logout } = useAuth();
+
+    const navItems = [
+        { label: "Dashboard", href: "/", icon: LayoutDashboard, color: "text-cyan-400" },
+        { label: "Document Forge", href: "/documents", icon: FileText, color: "text-magenta-400" },
+        { label: "Knowledge Core", href: "/knowledge", icon: BookOpen, color: "text-lime-400" },
+        { label: "Interview Sim", href: "/interview", icon: MessageSquare, color: "text-purple-400" },
+        { label: "Code Lab", href: "/code", icon: Code, color: "text-orange-400" },
+        { label: "Utilities", href: "/utilities", icon: Briefcase, color: "text-blue-400" },
+        { label: "User Guide", href: "/guide", icon: User, color: "text-green-400" },
+    ];
+
+    const handleNavClick = () => {
+        setOpen(false);
+    };
+
+    return (
+        <>
+            {/* Hamburger Button - Only visible on mobile */}
+            <Button
+                variant="ghost"
+                size="icon"
+                className="fixed top-4 left-4 z-50 md:hidden bg-card/80 backdrop-blur-sm border border-white/10 hover:bg-card"
+                onClick={() => setOpen(true)}
+            >
+                <Menu className="h-6 w-6" />
+            </Button>
+
+            {/* Mobile Slide-out Menu */}
+            <Sheet open={open} onOpenChange={setOpen}>
+                <SheetContent side="left" className="w-[280px] bg-card/95 backdrop-blur-xl border-r border-white/10 p-0">
+                    <SheetHeader className="p-6 border-b border-white/5">
+                        <SheetTitle className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-magenta-500 font-['Orbitron']">
+                            PlacementOS
+                        </SheetTitle>
+                    </SheetHeader>
+
+                    {/* Navigation Items */}
+                    <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto max-h-[calc(100vh-200px)]">
+                        {navItems.map((item) => {
+                            const isActive = location === item.href;
+                            return (
+                                <Link key={item.href} href={item.href} onClick={handleNavClick}>
+                                    <div
+                                        className={cn(
+                                            "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer group",
+                                            isActive
+                                                ? "bg-white/10 text-white shadow-lg shadow-black/10 border border-white/10"
+                                                : "text-muted-foreground hover:text-white hover:bg-white/5"
+                                        )}
+                                    >
+                                        <item.icon className={cn("w-5 h-5 transition-transform group-hover:scale-110", item.color)} />
+                                        <span className="font-medium">{item.label}</span>
+                                        {isActive && (
+                                            <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_var(--primary)]" />
+                                        )}
+                                    </div>
+                                </Link>
+                            );
+                        })}
+                    </nav>
+
+                    {/* User Profile & Actions */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/5 bg-black/20">
+                        <div className="flex items-center gap-3 mb-4 px-2">
+                            <Avatar className="h-10 w-10 border-2 border-primary/20">
+                                <AvatarImage src={user?.profileImageUrl} />
+                                <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                                    {user?.firstName?.[0]}{user?.lastName?.[0]}
+                                </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 overflow-hidden">
+                                <p className="text-sm font-medium truncate text-white">
+                                    {user?.firstName} {user?.lastName}
+                                </p>
+                                <p className="text-xs text-muted-foreground truncate">
+                                    {user?.email}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-2">
+                            <Link href="/settings" className="flex-1" onClick={handleNavClick}>
+                                <button className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-xs font-medium text-muted-foreground hover:text-white">
+                                    <Settings className="w-4 h-4" />
+                                    Settings
+                                </button>
+                            </Link>
+                            <button
+                                onClick={() => {
+                                    logout();
+                                    setOpen(false);
+                                }}
+                                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-colors text-xs font-medium text-red-400 hover:text-red-300"
+                            >
+                                <LogOut className="w-4 h-4" />
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+                </SheetContent>
+            </Sheet>
+        </>
+    );
+}
