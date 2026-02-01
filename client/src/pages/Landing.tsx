@@ -29,8 +29,8 @@ export default function Landing() {
   const features = [
     {
       icon: Brain,
-      title: "AI Interview Simulator",
-      desc: "Practice with 3 AI personas: Strict HR, Chill Tech Lead, and System Design Expert. Get real-time feedback and improve your answers.",
+      title: "AI Interview Assistant",
+      desc: "Get instant help with interview prep! Ask questions about behavioral, technical, system design, HR skills, or general prep. 5 specialized topics, instant answers.",
       color: "from-purple-500/20 to-pink-500/20",
       iconColor: "text-purple-400"
     },
@@ -50,8 +50,8 @@ export default function Landing() {
     },
     {
       icon: Code,
-      title: "Code Lab",
-      desc: "Paste your code and get instant AI analysis: time complexity, optimization suggestions, and best practices. Perfect for DSA prep!",
+      title: "Code Lab with Snippets",
+      desc: "Get student-friendly code analysis. Save code snippets with notes, open them anytime. Perfect for interview prep!",
       color: "from-orange-500/20 to-red-500/20",
       iconColor: "text-orange-400"
     },
@@ -192,7 +192,7 @@ export default function Landing() {
             <h2 className="text-3xl md:text-4xl font-bold font-['Orbitron'] mb-4">
               Why <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">PlacementOS</span>?
             </h2>
-            <p className="text-muted-foreground text-lg">Built by students, for students</p>
+            <p className="text-muted-foreground text-lg">Built by student, for students</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -224,7 +224,7 @@ export default function Landing() {
               Ready to Dominate Your Placements?
             </h3>
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              Join thousands of students already using PlacementOS to land their dream jobs
+              Start your journey with One stop Multifunctional Agent
             </p>
             <button
               onClick={handleLogin}
@@ -250,7 +250,7 @@ export default function Landing() {
       {/* Footer */}
       <footer className="relative z-10 border-t border-white/10 py-8">
         <div className="container mx-auto px-6 text-center text-muted-foreground text-sm">
-          <p>© 2026 PlacementOS. Built with ❤️ for students.</p>
+          <p>© 2026 PlacementOS. Developed by Shrinivas</p>
         </div>
       </footer>
     </div>

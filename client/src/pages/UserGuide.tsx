@@ -128,32 +128,44 @@ export default function UserGuide() {
                         </Card>
                     </TabsContent>
 
-                    {/* Interview Simulator Guide */}
+                    {/* Interview Assistant Guide */}
                     <TabsContent value="interview">
                         <Card className="glass-card">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <MessageSquare className="w-5 h-5 text-purple-400" />
-                                    Interview Simulator
+                                    Interview Assistant
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div>
-                                    <h3 className="font-bold text-lg mb-2">How to Practice</h3>
+                                    <h3 className="font-bold text-lg mb-2">How to Get Help</h3>
                                     <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-                                        <li>Select an interviewer persona (Strict HR, Friendly Tech Lead, etc.)</li>
-                                        <li>Type your responses to the AI interviewer's questions</li>
-                                        <li>Get real-time feedback and follow-up questions</li>
-                                        <li>Practice common interview questions and scenarios</li>
-                                        <li>Build confidence for real interviews</li>
+                                        <li>Select a help topic from the sidebar (Behavioral, Technical, etc.)</li>
+                                        <li>Ask any question about interviews in the chat</li>
+                                        <li>Get instant tips, examples, and strategies from the AI assistant</li>
+                                        <li>Ask follow-up questions to dive deeper</li>
+                                        <li>Switch topics anytime to explore different areas</li>
                                     </ol>
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-lg mb-2">Tips</h3>
+                                    <h3 className="font-bold text-lg mb-2">Available Topics</h3>
                                     <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                                        <li>Be specific and detailed in your answers</li>
-                                        <li>Use the STAR method (Situation, Task, Action, Result)</li>
-                                        <li>Practice regularly to improve your communication</li>
+                                        <li><strong>📝 Behavioral:</strong> STAR method, common questions, storytelling tips</li>
+                                        <li><strong>💻 Technical:</strong> DSA patterns, coding approaches, problem-solving</li>
+                                        <li><strong>🏗️ System Design:</strong> Architecture, scalability, databases</li>
+                                        <li><strong>📧 HR Skills:</strong> Salary negotiation, questions to ask, etiquette</li>
+                                        <li><strong>🎯 Prep Tips:</strong> Confidence building, what to wear, preparation</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-lg mb-2">Example Questions</h3>
+                                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                                        <li>"Give me tips for introducing myself"</li>
+                                        <li>"How do I approach two-pointer problems?"</li>
+                                        <li>"Explain load balancing simply"</li>
+                                        <li>"How to negotiate salary?"</li>
+                                        <li>"What should I wear to an interview?"</li>
                                     </ul>
                                 </div>
                             </CardContent>
@@ -171,22 +183,37 @@ export default function UserGuide() {
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div>
-                                    <h3 className="font-bold text-lg mb-2">AI Code Analysis</h3>
+                                    <h3 className="font-bold text-lg mb-2">Student-Friendly Code Analysis</h3>
                                     <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-                                        <li>Paste your code in the editor</li>
-                                        <li>Click "Analyze Code" to get AI feedback</li>
-                                        <li>Review time complexity analysis (Big O notation)</li>
-                                        <li>Get optimization suggestions</li>
-                                        <li>Learn better approaches and patterns</li>
+                                        <li>Write or paste your code in the editor</li>
+                                        <li>Click "Run Analysis" to get AI feedback</li>
+                                        <li>Get easy-to-understand explanations (no confusing Big O notation!)</li>
+                                        <li>See what your code does in plain English</li>
+                                        <li>View example outputs your code will produce</li>
+                                        <li>Get simple improvement tips you can actually use</li>
+                                        <li>Check if your code is fast or slow for large inputs</li>
                                     </ol>
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-lg mb-2">Use Cases</h3>
+                                    <h3 className="font-bold text-lg mb-2">Save & Manage Snippets</h3>
+                                    <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                                        <li>Click "Save Snippet" to save your code</li>
+                                        <li>Give it a title (e.g., "Two Sum Solution")</li>
+                                        <li>Choose the programming language</li>
+                                        <li>Add optional notes for future reference</li>
+                                        <li>View all saved snippets in the sidebar</li>
+                                        <li>Click "Open" to load a snippet back into the editor</li>
+                                        <li>Click delete (trash icon) to remove snippets you don't need</li>
+                                    </ol>
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-lg mb-2">What You'll Learn</h3>
                                     <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                                        <li>Prepare for coding interviews</li>
-                                        <li>Learn DSA patterns and optimizations</li>
-                                        <li>Understand time/space complexity</li>
-                                        <li>Improve code quality</li>
+                                        <li>Understand what your code actually does</li>
+                                        <li>See expected outputs with examples</li>
+                                        <li>Get simple tips to improve your code</li>
+                                        <li>Know if your code is fast or slow</li>
+                                        <li>Build a library of code snippets for interview prep</li>
                                     </ul>
                                 </div>
                             </CardContent>

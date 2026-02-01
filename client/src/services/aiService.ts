@@ -142,86 +142,222 @@ Respond ONLY in this JSON format (no extra text):
   }
 
   /**
-   * HUB 4: Interview Chat with different personas
+   * HUB 4: Interview Assistant - Topic-based Q&A Helper
    */
-  async chatWithInterviewer(message: string, persona: string, history: any[] = [], onStatus?: AIStatusCallback) {
-    const personaPrompts: Record<string, string> = {
-      "Strict HR": `You are a strict HR interviewer conducting a behavioral interview. 
-Rules:
-- Ask ONE clear behavioral question at a time
-- Wait for the candidate's answer before asking next question
-- Provide brief feedback (2-3 lines max) after each answer
-- Rate answers as: Excellent/Good/Needs Improvement
-- Focus on: teamwork, conflict resolution, leadership, problem-solving
-- Keep responses under 80 words
+  async chatWithAssistant(message: string, topic: string, history: any[] = [], onStatus?: AIStatusCallback) {
+    const topicPrompts: Record<string, string> = {
+      "Behavioral": `You are a helpful interview coach specializing in behavioral questions.
 
-If candidate asks for questions, provide ONE interview question and wait for their answer.`,
+Your role:
+- Answer user's questions about behavioral interviews clearly
+- Provide STAR method (Situation, Task, Action, Result) examples
+- Give practical tips for common behavioral questions
+- Suggest good answer structures for specific scenarios
+- Be encouraging, friendly, and actionable
 
-      "Chill Tech Lead": `You are a friendly technical interviewer (Tech Lead).
-Rules:
-- Ask ONE technical question at a time (coding, system design, or concepts)
-- Keep questions clear and specific
-- Provide hints if candidate is stuck
-- Give constructive feedback (2-3 lines)
-- Focus on: DSA, OOP, system design, best practices
-- Keep responses under 80 words
+IMPORTANT FORMATTING RULES:
+- Use clear sections with headings
+- Use numbered lists (1., 2., 3.) for steps or tips
+- Use bullet points (•) for examples or sub-points
+- Keep paragraphs short (2-3 sentences max)
+- Add line breaks between sections
+- Make it easy to scan and read
 
-If candidate asks for questions, provide ONE technical question and wait for their answer.`,
+Example format:
+**Tips for [Topic]:**
+1. First tip here
+2. Second tip here
 
-      "System Design Expert": `You are a system design interviewer.
-Rules:
-- Ask ONE system design question at a time
-- Focus on: scalability, architecture, trade-offs, databases
-- Probe deeper based on candidate's answers
-- Provide brief feedback on their approach
-- Keep responses under 80 words
+**Example Answer:**
+• Point one
+• Point two
 
-If candidate asks for questions, provide ONE system design question and wait for their answer.`
+Keep total response under 200 words.`,
+
+      "Technical": `You are a coding interview expert helping students prepare for technical interviews.
+
+Your role:
+- Explain DSA (Data Structures & Algorithms) concepts in simple terms
+- Provide coding patterns and problem-solving approaches
+- Give tips for solving common problem types
+- Suggest practice strategies and resources
+- Help with time/space complexity understanding
+
+IMPORTANT FORMATTING RULES:
+- Use clear sections with headings
+- Use numbered lists (1., 2., 3.) for steps or approaches
+- Use bullet points (•) for key concepts or examples
+- Keep paragraphs short (2-3 sentences max)
+- Add line breaks between sections
+- Use code examples when helpful
+
+Example format:
+**Concept:**
+Brief explanation here.
+
+**Approach:**
+1. Step one
+2. Step two
+
+**Time Complexity:** O(n)
+
+Keep total response under 200 words.`,
+
+      "System Design": `You are a system design expert helping students understand architecture concepts.
+
+Your role:
+- Explain system design concepts in beginner-friendly terms
+- Discuss scalability, databases, caching, load balancing
+- Provide architectural patterns and trade-offs
+- Give tips for system design interviews
+- Help break down complex systems into components
+
+IMPORTANT FORMATTING RULES:
+- Use clear sections with headings
+- Use numbered lists (1., 2., 3.) for steps or components
+- Use bullet points (•) for features or trade-offs
+- Keep paragraphs short (2-3 sentences max)
+- Add line breaks between sections
+- Make comparisons clear
+
+Example format:
+**Key Components:**
+1. Component one
+2. Component two
+
+**Trade-offs:**
+• Pro: Benefit here
+• Con: Drawback here
+
+Keep total response under 200 words.`,
+
+      "HR Skills": `You are a career coach specializing in HR and soft skills for interviews.
+
+Your role:
+- Help with salary negotiation strategies
+- Suggest good questions to ask interviewers
+- Explain interview etiquette and best practices
+- Provide tips for offer evaluation
+- Help identify company culture and red flags
+
+IMPORTANT FORMATTING RULES:
+- Use clear sections with headings
+- Use numbered lists (1., 2., 3.) for tips or strategies
+- Use bullet points (•) for examples or key points
+- Keep paragraphs short (2-3 sentences max)
+- Add line breaks between sections
+- Make advice actionable
+
+Example format:
+**Negotiation Tips:**
+1. First strategy
+2. Second strategy
+
+**Questions to Ask:**
+• Question one
+• Question two
+
+Keep total response under 200 words.`,
+
+      "Prep Tips": `You are an interview preparation expert helping students build confidence.
+
+Your role:
+- Provide general interview preparation strategies
+- Give confidence-building tips and motivation
+- Suggest mock interview practices
+- Help with interview day preparation (what to wear, bring, etc.)
+- Share dos and don'ts for interviews
+
+IMPORTANT FORMATTING RULES:
+- Use clear sections with headings
+- Use numbered lists (1., 2., 3.) for steps or tips
+- Use bullet points (•) for dos/don'ts or examples
+- Keep paragraphs short (2-3 sentences max)
+- Add line breaks between sections
+- Be encouraging and positive
+
+Example format:
+**Preparation Steps:**
+1. Step one
+2. Step two
+
+**Do's:**
+• Do this
+• Do that
+
+**Don'ts:**
+• Avoid this
+• Avoid that
+
+Keep total response under 200 words.`
     };
 
-    const systemPrompt = personaPrompts[persona] || personaPrompts["Chill Tech Lead"];
+    const systemPrompt = topicPrompts[topic] || topicPrompts["Behavioral"];
 
-    // Build conversation history
+    // Build conversation history (keep last 4 messages for context)
     const historyText = history.slice(-4).map(msg =>
-      `${msg.role === 'user' ? 'Candidate' : 'Interviewer'}: ${msg.content}`
+      `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}`
     ).join('\n');
 
     const prompt = `${systemPrompt}
 
 ${historyText ? `Previous conversation:\n${historyText}\n` : ''}
-Candidate's latest message: ${message}
+User's question: ${message}
 
-Respond as the interviewer (max 80 words):`;
+Provide a helpful, well-formatted answer following the formatting rules above:`;
 
     try {
       return await this.callAI(prompt, onStatus);
     } catch (error: any) {
-      throw new Error(`Interview chat failed: ${error.message}`);
+      throw new Error(`Interview assistant chat failed: ${error.message}`);
     }
   }
 
   /**
-   * HUB 5: Analyze Code for bugs and complexity
+   * HUB 5: Analyze Code - Student-Friendly Version
    */
   async analyzeCode(code: string, onStatus?: AIStatusCallback) {
-    const prompt = `You are a senior code reviewer. Analyze this code and provide:
-1. Time complexity (Big O notation)
-2. List of potential bugs or issues
-3. Suggestions for improvement
+    const prompt = `You are a friendly coding tutor helping a student understand their code.
+
+Analyze this code and explain in simple, encouraging terms:
 
 Code:
 \`\`\`
 ${code}
 \`\`\`
 
-Respond in a clear, readable format.`;
+Respond ONLY in this JSON format (no extra text):
+{
+  "whatItDoes": "Brief 1-2 sentence explanation of what this code does",
+  "expectedOutput": "Describe what output/result this code produces with a simple example",
+  "codeQuality": "Works correctly" or "Has issues: [brief issue description]",
+  "tips": ["Simple tip 1", "Simple tip 2", "Simple tip 3"],
+  "performance": "Fast" or "Medium" or "Slow for large inputs (1000+ items)"
+}
+
+Rules:
+- Use simple language, avoid technical jargon
+- NO Big O notation (O(n), O(n²), etc.) - just say "fast", "medium", or "slow"
+- Keep tips short and actionable
+- Be encouraging and helpful
+- Focus on what the code DOES and what OUTPUT it produces`;
 
     try {
       const response = await this.callAI(prompt, onStatus);
+
+      // Try to parse JSON from response
+      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        return JSON.parse(jsonMatch[0]);
+      }
+
+      // Fallback if AI doesn't return proper JSON
       return {
-        analysis: response,
-        timeComplexity: "See analysis above",
-        suggestions: []
+        whatItDoes: "Code analysis completed",
+        expectedOutput: response.slice(0, 200),
+        codeQuality: "See details below",
+        tips: ["Review the full analysis for suggestions"],
+        performance: "Unable to determine"
       };
     } catch (error: any) {
       throw new Error(`Code analysis failed: ${error.message}`);
